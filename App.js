@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, ActivityIndicator } from "react-native";
+import { StyleSheet, Text, View, Button, ActivityIndicator, Image } from "react-native";
 import { useState } from "react";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
@@ -30,7 +30,7 @@ const LoginScreen = ({ login }) => {
           setIsSigninInProgress(true);
           onLogin().then((user) => {
             console.log(user);
-            login(true);
+            login(user);
           });
         }}
       />
@@ -38,18 +38,22 @@ const LoginScreen = ({ login }) => {
   );
 };
 
-const HomeScreen = ({ login }) => (
+const HomeScreen = ({ user, login }) => (
   <View style={styles.layout}>
     <Text style={styles.title}>Home</Text>
+    <Image
+      style={{ width: 300, height: 300 }}
+      source={{
+        uri: user.user.photo,
+      }}
+    />
     <Button title="Sair" onPress={() => onLogout().then(() => login(false))} />
   </View>
 );
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  return (
-    <View style={styles.container}>{isAuthenticated ? <HomeScreen login={setIsAuthenticated} /> : <LoginScreen login={setIsAuthenticated} />}</View>
-  );
+  const [user, setUser] = useState(false);
+  return <View style={styles.container}>{user ? <HomeScreen user={user} login={setUser} /> : <LoginScreen login={setUser} />}</View>;
 };
 
 export default App;
