@@ -8,8 +8,8 @@ export const onLogin = async () => {
   return user;
 };
 
-export const onLogout = () => {
-  GoogleSignin.signOut();
+export const onLogout = async () => {
+  return await GoogleSignin.signOut();
 };
 
 GoogleSignin.configure({
@@ -41,7 +41,7 @@ const LoginScreen = ({ login }) => {
 const HomeScreen = ({ login }) => (
   <View style={styles.layout}>
     <Text style={styles.title}>Home</Text>
-    <Button title="Sair" onPress={() => login(false)} />
+    <Button title="Sair" onPress={() => onLogout().then(() => login(false))} />
   </View>
 );
 
