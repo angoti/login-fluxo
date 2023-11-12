@@ -1,39 +1,38 @@
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View, Button, ActivityIndicator } from "react-native";
 import { useState } from "react";
-import { GoogleSignin, GoogleSigninButton } from "@react-native-google-signin/google-signin";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+
+//funções de autenticação
+export const onLogin = async () => {
+  const user = await GoogleSignin.signIn();
+  return user;
+};
+
+export const onLogout = () => {
+  GoogleSignin.signOut();
+};
+
+GoogleSignin.configure({
+  webClientId: "676797397237-pjipptjgb1nuaomvcm6rd6dpt19jl06n.apps.googleusercontent.com",
+});
 
 // Telas
 const LoginScreen = ({ login }) => {
   const [isSigninInProgress, setIsSigninInProgress] = useState(false);
-  
-  GoogleSignin.configure({
-    webClientId: "676797397237-pjipptjgb1nuaomvcm6rd6dpt19jl06n.apps.googleusercontent.com",
-  });
-
-  async function onGoogleButtonPress() {
-    setIsSigninInProgress(true);
-    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-    try {
-      const userInfo = await GoogleSignin.signIn();
-      return userInfo;
-    } catch (e) {
-      console.error("----------------> ", e);
-    }
-  }
 
   return (
     <View style={styles.layout}>
+      {isSigninInProgress && <ActivityIndicator />}
       <Text style={styles.title}>Login</Text>
-      <GoogleSigninButton
-        size={GoogleSigninButton.Size.Wide}
-        color={GoogleSigninButton.Color.Light}
-        onPress={() =>
-          onGoogleButtonPress().then((user) => {
-            console.log("********** ", user.user);
-            login(true)
-          })
-        }
-        disabled={isSigninInProgress}
+      <Button
+        title="entrar"
+        onPress={() => {
+          setIsSigninInProgress(true);
+          onLogin().then((user) => {
+            console.log(user);
+            login(true);
+          });
+        }}
       />
     </View>
   );
